@@ -1,0 +1,13 @@
+﻿@model Int32
+@{
+	ViewData["Title"] = "Data Base View Page";
+}
+
+<form method="post">
+	<div class="text-center">
+		<h1 class="display-4">Welcome to DB View Page</h1>
+		<br />
+		<h2>Number of items in DB: @Model</h2>
+		<button type="submit" asp-action="ShowDataTable">Show Data</button>
+	</div>
+</form>
