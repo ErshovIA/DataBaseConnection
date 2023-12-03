@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
-//using Microsoft.Extensions.Configuration;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 
 
@@ -7,7 +8,7 @@ namespace DataBaseConnection.Models
 {
     public class DataBaseModel
     {
-        String connectionString = "Server=192.168.0.104;User ID=reader;Password=reader;Database=SENSOR_DB";
+        String connectionString;// = "Server=192.168.0.104;User ID=reader;Password=reader;Database=SENSOR_DB";
 
 
 
@@ -15,6 +16,12 @@ namespace DataBaseConnection.Models
         {
 			//this.connectionString = Configuration["ConnectionStrings:Default"];
 			//this.connectionString = configuration.GetConnectionString("DefaultConnection");
+
+			var ConfBuilder = new ConfigurationBuilder();
+			ConfBuilder.SetBasePath(Directory.GetCurrentDirectory());
+			ConfBuilder.AddJsonFile("appSettings.json", optional: true, reloadOnChange: true);
+			IConfiguration MyConfiguration = ConfBuilder.Build();
+			this.connectionString = MyConfiguration.GetConnectionString("DefaultConnection");
 		}
 
         public List<DataBaseItem> GetItems()
