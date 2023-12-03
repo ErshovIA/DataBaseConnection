@@ -1,17 +1,21 @@
 ﻿using MySqlConnector;
+//using Microsoft.Extensions.Configuration;
+
 
 
 namespace DataBaseConnection.Models
 {
     public class DataBaseModel
     {
-        String connectionString = "Server=192.168.0.103;User ID=reader;Password=reader;Database=SENSOR_DB";
+        String connectionString = "Server=192.168.0.104;User ID=reader;Password=reader;Database=SENSOR_DB";
+
 
 
         public DataBaseModel()
         {
-            //this.connectionString = Configuration["ConnectionStrings:Default"];
-        }
+			//this.connectionString = Configuration["ConnectionStrings:Default"];
+			//this.connectionString = configuration.GetConnectionString("DefaultConnection");
+		}
 
         public List<DataBaseItem> GetItems()
         {

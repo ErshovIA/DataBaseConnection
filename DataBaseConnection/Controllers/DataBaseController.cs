@@ -8,16 +8,32 @@ using DataBaseConnection.Models;
 
 
 
+
+
+
 namespace DataBaseConnection.Controllers
 {
     public class DataBaseController : Controller
     {
-        public IActionResult Index()
+
+		public IActionResult Index()
         {
             DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseConnection.Models.DataBaseModel)) as DataBaseModel;
 
-            return View(db.GetNumberOfItems());
-        }
+			Int32 NOfItems;
+            try
+            {
+                NOfItems = db.GetNumberOfItems();
+            }
+            catch(MySqlConnector.MySqlException ex)
+            {
+                var ExType = ex.GetType();
+				return View("~/Views/Shared/Error.cshtml", new ErrorViewModel { RequestId = ex.Message });
+            }
+            
+            //return View(db.GetNumberOfItems());
+            return View(NOfItems);
+		}
 
 
         public IActionResult ShowDataTable() 
