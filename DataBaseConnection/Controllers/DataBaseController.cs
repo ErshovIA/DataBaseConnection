@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Xml.Serialization;
+using System.IO;
+using System.Globalization;
 using DataBaseConnection.Models;
+using ClosedXML.Excel;
+
 
 
 
@@ -70,6 +75,96 @@ namespace DataBaseConnection.Controllers
 
             return table;
         }
+
+        private Byte[] GetExcelFileBinaryContent(DataBaseModel Db)
+        {
+            List<DataBaseItem> lstItems = Db.GetItems();
+
+            DataTable dt = this.ConvertToDataTable(lstItems);
+
+			XLWorkbook wb = new XLWorkbook();
+
+            wb.Worksheets.Add(dt, "Sensors");
+
+            wb.Worksheet(1).Cells(true).Style.Font.FontColor = XLColor.FromTheme(XLThemeColor.Text1);
+			wb.Worksheet(1).Cells(false).Style.Font.FontColor = XLColor.FromTheme(XLThemeColor.Text1);
+
+			wb.Worksheet(1).Cells(true).Style.Fill.BackgroundColor = XLColor.White;
+			wb.Worksheet(1).Cells(false).Style.Fill.BackgroundColor = XLColor.White;
+
+			wb.Worksheet(1).Cells(true).Style.Fill.PatternColor = XLColor.Black;
+			wb.Worksheet(1).Cells(false).Style.Fill.PatternColor = XLColor.Black;
+
+            wb.Worksheet(1).Cells(true).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+			wb.Worksheet(1).Cells(true).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+			wb.Worksheet(1).Cells(false).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+			wb.Worksheet(1).Cells(false).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+
+            wb.Worksheet(1).Cells(true).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+			wb.Worksheet(1).Cells(false).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            wb.Worksheet(1).Tables.FirstOrDefault().ShowAutoFilter = false;
+
+            wb.Worksheet(1).Columns().AdjustToContents();
+
+            MemoryStream ms = new MemoryStream();
+            wb.SaveAs(ms);
+
+            return ms.ToArray();
+		}
+
+        public IActionResult SaveToExcelFile()
+        {
+            DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
+
+            Byte[] data = this.GetExcelFileBinaryContent(db);
+
+            return File(data, "application/xlsx", "SensorsData.xlsx");
+        }
+
+        // XML:
+
+        public IActionResult SaveToXmlFile()
+        {
+            DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
+
+            List<DataBaseItem> lst = db.GetItems();
+
+            using (StringWriter stringWriter = new StringWriter(new StringBuilder()))
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<DataBaseItem>));
+                xmlSerializer.Serialize(stringWriter, lst);
+
+                Byte[] data = Encoding.Unicode.GetBytes(stringWriter.ToString());
+
+                return File(data, "application/xml", "SensorData.xml");
+            }
+        }
+
+        // Chart:
+
+        [HttpGet]
+        public IActionResult SelectSensor()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult SelectSensor(DataBaseItem DbItem)
+        {
+            return RedirectToAction("ShowChart", DbItem);
+        }
+
+        public IActionResult ShowChart(DataBaseItem DbItem)
+        {
+            CultureInfo ci = new CultureInfo("ru-RU");
+            Thread.CurrentThread.CurrentCulture = ci;
+			Thread.CurrentThread.CurrentUICulture = ci;
+
+            DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
+
+            return View(db.GetSensorItems(DbItem.SensorName, DbItem.DataType, DbItem.Position));
+		}
 
     }
 }
