@@ -10,6 +10,16 @@ namespace DataBaseConnection.Models
     {
         String connectionString;// = "Server=192.168.0.104;User ID=reader;Password=reader;Database=SENSOR_DB";
 
+        // Перечисления, где хранятся возможные датчики и типы данных
+        /*enum Sensors
+        {
+            BMP180,
+			BMP280,
+            DHT11,
+            MQ-135,
+
+		}*/
+
 
 
         public DataBaseModel()
