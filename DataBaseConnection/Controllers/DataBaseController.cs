@@ -166,5 +166,25 @@ namespace DataBaseConnection.Controllers
             return View(db.GetSensorItems(DbItem.SensorName, DbItem.DataType, DbItem.Position));
 		}
 
-    }
+
+        // 3. Выбор критериев сортировки и вывод отсоррованной таблицы
+		public IActionResult SelectSortingCriteria()
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public IActionResult SelectSortingCriteria(SortingCriterias Cr)
+		{
+			return RedirectToAction("ShowSortedDataTable", Cr);
+		}
+
+		public IActionResult ShowSortedDataTable(SortingCriterias Cr)
+		{
+			DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseConnection.Models.DataBaseModel)) as DataBaseModel;
+
+			return View(db.GetSortedItems(Cr));
+		}
+
+	}
 }

@@ -1,0 +1,87 @@
+﻿@model DataBaseConnection.Models.SortingCriterias
+@{
+	ViewData["Title"] = "Select Sorting criteria";
+}
+
+
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="SelectSortingCriteria">
+
+
+			<div class="form-group">
+				<label asp-for="criteria_1" class="control-label">criteria_1</label>
+				<select asp-for="criteria_1" class="form-control">
+					<option value="SensorName">SensorName</option>
+					<option value="DataType">DataType</option>
+					<option value="Position">Position</option>
+					<option value="Value">Value</option>
+					<option value="Date">Date</option>
+				</select>
+				<span asp-validation-for="criteria_1" class="text-danger" />
+			</div>
+
+			<div class="form-group">
+				<label asp-for="criteria_2" class="control-label">criteria_2</label>
+				<select asp-for="criteria_2" class="form-control">
+					<option value="">NONE</option>
+					<option value="SensorName">SensorName</option>
+					<option value="DataType">DataType</option>
+					<option value="Position">Position</option>
+					<option value="Value">Value</option>
+					<option value="Date">Date</option>
+				</select>
+				<span asp-validation-for="criteria_2" class="text-danger" />
+			</div>
+
+			<div class="form-group">
+				<label asp-for="criteria_3" class="control-label">criteria_3</label>
+				<select asp-for="criteria_3" class="form-control">
+					<option value="">NONE</option>
+					<option value="SensorName">SensorName</option>
+					<option value="DataType">DataType</option>
+					<option value="Position">Position</option>
+					<option value="Value">Value</option>
+					<option value="Date">Date</option>
+				</select>
+				<span asp-validation-for="criteria_3" class="text-danger" />
+			</div>
+
+			<div class="form-group">
+				<label asp-for="criteria_4" class="control-label">criteria_4</label>
+				<select asp-for="criteria_4" class="form-control">
+					<option value="">NONE</option>
+					<option value="SensorName">SensorName</option>
+					<option value="DataType">DataType</option>
+					<option value="Position">Position</option>
+					<option value="Value">Value</option>
+					<option value="Date">Date</option>
+				</select>
+				<span asp-validation-for="criteria_4" class="text-danger" />
+			</div>
+
+			<div class="form-group">
+				<label asp-for="criteria_5" class="control-label">criteria_5</label>
+				<select asp-for="criteria_5" class="form-control">
+					<option value="">NONE</option>
+					<option value="SensorName">SensorName</option>
+					<option value="DataType">DataType</option>
+					<option value="Position">Position</option>
+					<option value="Value">Value</option>
+					<option value="Date">Date</option>
+				</select>
+				<span asp-validation-for="criteria_5" class="text-danger" />
+			</div>
+
+
+			<br />
+
+			<div class="form-group">
+				<input type="submit" value="Select" class="btn btn-primary" />
+			</div>
+
+			<br />
+
+		</form>
+	</div>
+</div>

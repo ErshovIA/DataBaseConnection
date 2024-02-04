@@ -68,7 +68,64 @@ namespace DataBaseConnection.Models
             return resultList;
         }
 
-        public Int32 GetNumberOfItems()
+
+        // 3. Для отображения данных, отсортированных
+        public List<DataBaseItem> GetSortedItems(SortingCriterias Cr)
+        {
+			List<DataBaseItem> resultList = new List<DataBaseItem>();
+
+            List<string> criteria = Cr.ToArray();
+
+			using (MySqlConnection connection = new MySqlConnection(this.connectionString))
+			{
+				connection.Open();
+                String selectSqlCmd = "SELECT * FROM " + "SENSOR_DATA_TABLE";
+
+				if (criteria.Count != 0)
+                {
+                    if (criteria.Count > 1)
+                    {
+                        selectSqlCmd = selectSqlCmd + " ORDER BY " + criteria[0];
+						for (Int32 i = 1; i < criteria.Count; i++)
+						{
+							selectSqlCmd = selectSqlCmd + ", " + criteria[i];
+						}
+					}
+                    else
+                    {
+						selectSqlCmd = selectSqlCmd + " ORDER BY " + criteria[0];
+					}
+                }
+
+                selectSqlCmd = selectSqlCmd + ";";
+
+
+				MySqlCommand cmd = new MySqlCommand(selectSqlCmd, connection);
+
+				using (MySqlDataReader reader = cmd.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						DataBaseItem item = new DataBaseItem();
+
+						item.Id = Convert.ToInt32(reader["ID"]);
+						item.SensorName = Convert.ToString(reader["SensorName"]);
+						item.DataType = Convert.ToString(reader["DataType"]);
+						item.Position = Convert.ToString(reader["Position"]);
+						item.Value = Convert.ToString(reader["Value"]);
+						item.Date = Convert.ToString(reader["Date"]);
+
+						resultList.Add(item);
+					}
+				}
+
+			}
+
+			return resultList;
+		}
+
+
+			public Int32 GetNumberOfItems()
         {
             Int32 numOfItems = 0;
 
