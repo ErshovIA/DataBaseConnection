@@ -151,7 +151,7 @@ namespace DataBaseConnection.Models
         }
 
 
-        public List<DataBaseItem> GetSensorItems(String SensorName, String DataType, String Position)
+        public List<DataBaseItem> GetSensorItems(String DataType, String Position, String Date1, String Date2)
         {
             List<DataBaseItem> resultList = new List<DataBaseItem> ();
 
@@ -159,8 +159,11 @@ namespace DataBaseConnection.Models
             { 
                 connection.Open();
                 String selectSqlCommand = "SELECT * FROM " + "SENSOR_DATA_TABLE" +
-                                            " WHERE (SensorName = '" + SensorName + "')" + " AND (DataType = '" + DataType + "')" +
-                                            " AND (Position = '" + Position + "');";
+											" WHERE (DataType = '" + DataType + "')" +
+											" AND (Position = '" + Position + "')" +
+                                            " AND (Date > '" + Date1 + "')" +
+                                            " AND (Date < '" + Date2 + "')" +
+                                            " ORDER BY Date;";
 
                 MySqlCommand cmd = new MySqlCommand(selectSqlCommand, connection);
 

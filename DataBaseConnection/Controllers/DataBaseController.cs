@@ -9,12 +9,7 @@ using System.IO;
 using System.Globalization;
 using DataBaseConnection.Models;
 using ClosedXML.Excel;
-
-
-
-
-
-
+// using AspNetCore;
 
 namespace DataBaseConnection.Controllers
 {
@@ -39,6 +34,12 @@ namespace DataBaseConnection.Controllers
             //return View(db.GetNumberOfItems());
             return View(NOfItems);
 		}
+
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
+
 
 
         public IActionResult ShowDataTable() 
@@ -150,12 +151,12 @@ namespace DataBaseConnection.Controllers
         }
 
         [HttpPost]
-        public IActionResult SelectSensor(DataBaseItem DbItem)
+        public IActionResult SelectSensor(DataType_Position_Time_Selection Item)
         {
-            return RedirectToAction("ShowChart", DbItem);
+            return RedirectToAction("ShowChart", Item);
         }
 
-        public IActionResult ShowChart(DataBaseItem DbItem)
+        public IActionResult ShowChart(DataType_Position_Time_Selection Item)
         {
             CultureInfo ci = new CultureInfo("ru-RU");
             Thread.CurrentThread.CurrentCulture = ci;
@@ -163,7 +164,17 @@ namespace DataBaseConnection.Controllers
 
             DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
 
-            return View(db.GetSensorItems(DbItem.SensorName, DbItem.DataType, DbItem.Position));
+            List<DataBaseItem> itemsList = db.GetSensorItems(Item.DataType, Item.Position, Item.Date1, Item.Date2);
+
+            if (itemsList.Count != 0)
+            {
+                return View(db.GetSensorItems(Item.DataType, Item.Position, Item.Date1, Item.Date2));
+			}
+            else
+            {
+				return View("~/Views/DataBase/SimpleErrorMsg.cshtml", "Некорректные параметры сортировки");
+			}
+
 		}
 
 
