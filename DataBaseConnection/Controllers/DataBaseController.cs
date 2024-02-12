@@ -79,7 +79,7 @@ namespace DataBaseConnection.Controllers
 
         private Byte[] GetExcelFileBinaryContent(DataBaseModel Db)
         {
-            List<DataBaseItem> lstItems = Db.GetItems();
+            List<DataBaseItem> lstItems = Db.GetItems(Db.Criteria);
 
             DataTable dt = this.ConvertToDataTable(lstItems);
 
@@ -118,29 +118,43 @@ namespace DataBaseConnection.Controllers
         {
             DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
 
-            Byte[] data = this.GetExcelFileBinaryContent(db);
+            db.Criteria = new SortingCriterias();
+			Byte[] data = this.GetExcelFileBinaryContent(db);
 
             return File(data, "application/xlsx", "SensorsData.xlsx");
         }
 
-        // XML:
-
+		// XML:
         public IActionResult SaveToXmlFile()
-        {
-            DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
+		{
+			DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
 
-            List<DataBaseItem> lst = db.GetItems();
+			List<DataBaseItem> lst = db.GetItems();
 
-            using (StringWriter stringWriter = new StringWriter(new StringBuilder()))
-            {
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<DataBaseItem>));
-                xmlSerializer.Serialize(stringWriter, lst);
+			using (StringWriter stringWriter = new StringWriter(new StringBuilder()))
+			{
+				XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<DataBaseItem>));
+				xmlSerializer.Serialize(stringWriter, lst);
 
-                Byte[] data = Encoding.Unicode.GetBytes(stringWriter.ToString());
+				Byte[] data = Encoding.Unicode.GetBytes(stringWriter.ToString());
 
-                return File(data, "application/xml", "SensorData.xml");
-            }
-        }
+				return File(data, "application/xml", "SensorData.xml");
+			}
+		}
+
+		///////////////////////////////////////////////////
+		// Сохранение отсортированной таблицы в exel, xml
+		///////////////////////////////////////////////////
+		/// Exel:
+		public IActionResult SaveSortedTableToExel()
+		{
+			// return View("~/Views/DataBase/SimpleErrorMsg.cshtml", "Такого функционала пока нет");
+			DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
+
+			Byte[] data = this.GetExcelFileBinaryContent(db);
+
+			return File(data, "application/xlsx", "SensorsData.xlsx");
+		}
 
         // Chart:
 
@@ -194,7 +208,14 @@ namespace DataBaseConnection.Controllers
 		{
 			DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseConnection.Models.DataBaseModel)) as DataBaseModel;
 
-			return View(db.GetSortedItems(Cr));
+			return View(db.GetItems(Cr));
+		}
+
+
+		/// Xml:
+		public IActionResult SaveSortedTableToXml()
+		{
+			return View("~/Views/DataBase/SimpleErrorMsg.cshtml", "Такого функционала пока нет");
 		}
 
 	}

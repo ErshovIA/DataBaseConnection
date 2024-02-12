@@ -4,6 +4,13 @@
 	ViewData["Title"] = "Sensors";
 }
 
+<form method="post">
+	<div class="text-center">
+		<button type="submit" asp-action="SaveSortedTableToExel">Save as Exel</button>
+		<button type="submit" asp-action="SaveSortedTableToXml">Save as Xml</button>
+	</div>
+</form>
+
 <h1>Data from sensors</h1>
 
 <table class="table">

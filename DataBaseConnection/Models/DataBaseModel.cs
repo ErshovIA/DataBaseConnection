@@ -20,12 +20,15 @@ namespace DataBaseConnection.Models
 
 		}*/
 
+        public SortingCriterias Criteria { get; set; }
 
 
-        public DataBaseModel()
+
+		public DataBaseModel()
         {
 			//this.connectionString = Configuration["ConnectionStrings:Default"];
 			//this.connectionString = configuration.GetConnectionString("DefaultConnection");
+            //this.Criteria = new SortingCriterias();
 
 			var ConfBuilder = new ConfigurationBuilder();
 			ConfBuilder.SetBasePath(Directory.GetCurrentDirectory());
@@ -70,11 +73,16 @@ namespace DataBaseConnection.Models
 
 
         // 3. Для отображения данных, отсортированных
-        public List<DataBaseItem> GetSortedItems(SortingCriterias Cr)
+        public List<DataBaseItem> GetItems(SortingCriterias Cr)
         {
 			List<DataBaseItem> resultList = new List<DataBaseItem>();
 
             List<string> criteria = Cr.ToArray();
+
+            if (criteria.Count > 0)
+                this.Criteria = Cr;                     // Сохранил предыдущий запрос
+            else
+                criteria = this.Criteria.ToArray();     // Если аргументом передан пустой объект, то используем предыдущие критерии (последние ненулевые)  
 
 			using (MySqlConnection connection = new MySqlConnection(this.connectionString))
 			{
