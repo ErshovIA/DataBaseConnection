@@ -129,7 +129,8 @@ namespace DataBaseConnection.Controllers
 		{
 			DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
 
-			List<DataBaseItem> lst = db.GetItems();
+			db.Criteria = new SortingCriterias();
+			List<DataBaseItem> lst = db.GetItems(db.Criteria);
 
 			using (StringWriter stringWriter = new StringWriter(new StringBuilder()))
 			{
@@ -156,9 +157,28 @@ namespace DataBaseConnection.Controllers
 			return File(data, "application/xlsx", "SensorsData.xlsx");
 		}
 
-        // Chart:
+		/// Xml:
+		public IActionResult SaveSortedTableToXml()
+		{
+			DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
 
-        [HttpGet]
+			List<DataBaseItem> lst = db.GetItems(db.Criteria);
+
+			using (StringWriter stringWriter = new StringWriter(new StringBuilder()))
+			{
+				XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<DataBaseItem>));
+				xmlSerializer.Serialize(stringWriter, lst);
+
+				Byte[] data = Encoding.Unicode.GetBytes(stringWriter.ToString());
+
+				return File(data, "application/xml", "SensorData.xml");
+			}
+		}
+
+
+		// Chart:
+
+		[HttpGet]
         public IActionResult SelectSensor()
         {
             return View();
@@ -211,12 +231,6 @@ namespace DataBaseConnection.Controllers
 			return View(db.GetItems(Cr));
 		}
 
-
-		/// Xml:
-		public IActionResult SaveSortedTableToXml()
-		{
-			return View("~/Views/DataBase/SimpleErrorMsg.cshtml", "Такого функционала пока нет");
-		}
 
 	}
 }
