@@ -198,6 +198,7 @@ namespace DataBaseConnection.Controllers
 
             DataBaseModel db = HttpContext.RequestServices.GetService(typeof(DataBaseModel)) as DataBaseModel;
 
+            Item.Check_availability();
             List<DataBaseItem> itemsList = db.GetSensorItems(Item.DataType, Item.Position, Item.Date1, Item.Date2);
 
             if (itemsList.Count != 0)

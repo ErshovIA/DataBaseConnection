@@ -10,10 +10,6 @@ namespace DataBaseConnection.Models
     {
         String connectionString;// = "Server=192.168.0.104;User ID=reader;Password=reader;Database=SENSOR_DB";
 
-        // Список, где хранятся возможные критерии сортировки
-
-
-        // Списки, где хранятся возможные датчики и типы данных
         
 
 
